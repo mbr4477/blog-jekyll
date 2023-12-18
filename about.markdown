@@ -2,6 +2,7 @@
 layout: page
 title: About
 permalink: /about/
+order: 3
 ---
 
 ![](/assets/wedding.jpg){: style="display:block;margin-left:auto;margin-right:auto;max-height:250px;width: 100%;object-fit:cover;"}

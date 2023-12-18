@@ -1,6 +1,7 @@
 ---
 layout: page
-title: Papers
+title: Publications
+order: 2
 ---
 
 <div style="text-align: left;">

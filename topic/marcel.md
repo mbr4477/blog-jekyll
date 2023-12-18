@@ -1,8 +1,10 @@
 ---
 layout: post
 title: Marcel Projections
-date: 2023-12-10
-tags: ["math", "baseball"]
+exclude: true
+learn: true
+tags:
+   - "Baseball Analytics"
 ---
 
 Let’s breakdown [Marcel projections](http://tangotiger.net/marcel). When projecting a player, Marcel combines two estimates: a player-level estimate and a league-level estimate.

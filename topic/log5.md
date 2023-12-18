@@ -1,8 +1,11 @@
 ---
 layout: post
+exclude: true
+learn: true
 date: 2020-12-03
 title: Estimating Baseball Event Probabilities With log5
-tags: ["baseball", "probability", "math"]
+tags:
+    - "Baseball Analytics"
 ---
 
 In his 1981 and 1983 *Baseball Abstracts*, pioneering sabermetrician Bill James proposed the log5 method for mixing event probabilities, which is [similar to metrics used in other fields](https://angrystatistician.blogspot.com/2013/03/baseball-chess-psychology-and.html). Here are two motivating scenarios:

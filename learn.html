@@ -1,0 +1,20 @@
+---
+layout: default
+title: Learn
+---
+{%- assign learn_pages = site.pages | where: "learn", true -%}
+{%- assign categories = learn_pages | map: "tags" | uniq | sort -%}
+
+<h1>Learn</h1>
+
+{%- for cat in categories -%}
+    <h2>{{ cat }}</h2>
+    {%- assign cat_pages = learn_pages | where_exp: "item", "item.tags contains cat" | sort: "title" -%}
+    <ul>
+        {%- for p in cat_pages -%}    
+        <li>
+            <a href="{% link {{p.path}} %}">{{ p.title }}</a>
+        </li>
+        {%- endfor -%}
+    </ul>
+{%- endfor -%}
