@@ -1,0 +1,33 @@
+$$
+\begin{aligned}
+\mathbb E_{q_\phi(x, z)}\left[\log \frac{p_\theta(x , z)}{q_\phi(z \mid x)}\right]
+&= 
+\mathbb E_{q_\phi(x, z)}\left[\log \frac{p_\theta(x , z)}
+{q_\phi(z \mid x)p_\mathcal{D}(x)}\right]
+
+- \mathbb E_{q_\phi(x, z)}[\log p_\mathcal D(x)] \\
+&= -D_\text{KL}(q_\phi(x, z) \mid\mid p_\theta(x, z)) - \cancelto{\text{constant}}{\mathbb E_{q_\phi(x, z)}[\log p_\mathcal D(x)]}
+\\
+&= - \mathbb E_{q_\phi(x, z)}\left[ \log \frac{q_\phi(x, z)}{p_\theta(x, z)} \right]
+\\
+&= - \mathbb E_{p_\mathcal D(x)} \mathbb E_{q_\phi(z \mid x)}
+\left[ \log \frac{q_\phi(z \mid x)p_\mathcal{D}(x)}{p_\theta(z \mid x)p_\theta(x)} \right]
+\\
+&= - \mathbb E_{p_\mathcal D(x)} \mathbb E_{q_\phi(z \mid x)}
+\left[ \log \frac{p_\mathcal{D}(x)}{p_\theta(x)} + \log \frac{q_\phi(z \mid x)}{p_\theta(z \mid x)} \right]
+\\
+&= - \mathbb E_{p_\mathcal D(x)}
+\left[ \log \frac{p_\mathcal{D}(x)}{p_\theta(x)} + \mathbb E_{q_\phi(z \mid x)} \left[\log \frac{q_\phi(z \mid x)}{p_\theta(z \mid x)} \right]\right]
+\\
+&= - D_\text{KL}(p_\mathcal{D}(x) \mid\mid p_\theta(x))
+- \mathbb E_{p_\mathcal{D}(x)}\left[D_\text{KL}(q_\phi(z \mid x) \mid\mid p_\theta(z \mid x)) \right]
+\\
+&= - \mathbb E_{q_\phi(z)} \mathbb E_{q_\phi(x \mid z)}
+\left[ \log \frac{q_\phi(x \mid z)q_\phi(z)}{p_\theta(x \mid z)p(z)} \right]
+\\
+&= - D_\text{KL}(q_\phi(z) \mid\mid p(z))
+- \mathbb E_{q_\phi(z)}\left[D_\text{KL}(q_\phi(x \mid z) \mid\mid p_\theta(x \mid z)) \right]
+
+\end{aligned}
+$$
+

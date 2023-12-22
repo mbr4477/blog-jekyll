@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: wiki
 title: Marcel Projections
 exclude: true
 learn: true

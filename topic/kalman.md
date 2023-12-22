@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: wiki
 exclude: true
 learn: true
 title: The Kalman Filter

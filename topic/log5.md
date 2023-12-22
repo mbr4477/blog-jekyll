@@ -1,5 +1,5 @@
 ---
-layout: post
+layout: wiki
 exclude: true
 learn: true
 date: 2020-12-03
