@@ -27,9 +27,9 @@ In this case, I am trying to infer the likelihood it is snowing
 if I observe you drinking hot cocoa.
 We break this inference into three factors:
 
-- $$p(☕ \mid \char"2746)$$: The chance that you drink hot cocoa when it really is snowing.
-- $$p(\char"2746)$$: The overall chance that it snows.
-- $$p(☕)$$: The overall chance you drink hot cocoa whether it is snowing or not.
+- $p(☕ \mid \char\"2746)$: The chance that you drink hot cocoa when it really is snowing.
+- $p(\char\"2746)$: The overall chance that it snows.
+- $p(☕)$: The overall chance you drink hot cocoa whether it is snowing or not.
 
 Let's assume these values are 0.8, 0.2, and 0.3 respectively, and see what the numerator represents.
 It snows 20% of the time, and in that 20% you drink cocoa 80% of the time.
@@ -63,7 +63,7 @@ $$
 p(☕ \mid \char"2744) = \frac{p(\char"2744 \mid ☕)p(☕)}{p(\char"2744)}
 $$
 
-In this case, we once again use the numerator to figure out the joint probability $$p(\char"2744, ☕)$$
+In this case, we once again use the numerator to figure out the joint probability $p(\char\"2744, ☕)$
 and then rescale things to the world in which we know it is snowing.
 The joint probability remains 16%, but since the "it's already snowing" worlds
 make up 20% of all possible worlds, we divide the 16% out of 20% to get 80%,
