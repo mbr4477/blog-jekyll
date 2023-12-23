@@ -21,8 +21,13 @@ In most cases we have a model we want to use for a certain task
 but have no idea what the parameter values (knob settings) should be
 to get it to actually *do* the task.
 Maybe I want to use the number of runs a baseball team scores over a season (the input)
-to linearly estimate the number of wins they had in that season (the output).
-However, I don't know what slope and intercept values
+to linearly estimate the number of wins they had in that season (the output):
+
+$$
+\underbrace{y}_{\text{wins}} = m\cdot\underbrace{x}_{\text{runs}} + b
+$$
+
+However, I don't know what slope $m$ and intercept $b$ values
 actually capture this relationship.
 
 Machine learning solves this problem.
@@ -48,22 +53,24 @@ Here's a few examples to illustrate the difference:
 
 # Inferring Parameters from Data
 
-Fitting a model is the process of finding the parameters that make the model match the data.
-If we want to fit the model to a single example, we can put in the example input
-and then twist the knobs until the output matches the target output.
-There might be multiple knob settings that give the correct output.
-Of course, we don't have to settle for exact solutions
-and mark every knob setting as either pass or fail.
-We can give each setting a "score" based on how close it gets the model to the target.
-Since this score is dependent (or conditional) on looking at a specific example,
-we can write the score as $p(\theta \mid x)$.
-This denotes the "goodness" of some knob setting $\theta$
-against.
+If you think about it,
+each example in the dataset contains information
+about the parameters.
+We want to extract this information through *inference*.
+Just like [knowing you're drinking hot cocoa tells us something about whether it's snowing]({% link topic/bayesrule.md %}),
+knowing that we are working in a world where data point ($x$ runs, $y$ wins) was observed tells us something about the range of likely values for model parameters $m$ and $b$.
+If we say that $\theta$ represents the knob settings or parameters (the slope and intercept in this case),
+then we want to infer $p(\theta \mid x)$&mdash;the likely values for the parameters
+given ("conditioned on") the observed data point.
 
-If we design this score so that it sums to one across all possible knob settings,
-then the score function $p(\theta \mid x)$ represents a valid probability distribution.
-It tells us how likely a knob configuration is given a particular observation.
-We can apply Bayes' Rule to breakdown this conditional probability:
+<aside>
+    <p>If the probability notation is tripping you up, think of this as some function $f(\theta, x)$ that sums to one over all values of $\theta$.</p>
+</aside>
+
+The "best" slope and intercept are those
+that *maximize* the inferred probability.
+These are the most likely parameters given the observation.
+We can break down the inference using Bayes' Rule:
 
 $$
 \begin{equation}
@@ -71,159 +78,161 @@ p(\theta \mid x) = \frac{p(x \mid \theta)p(\theta)}{p(x)}
 \end{equation}
 $$
 
-Wait, come back, don't run away from the math! Let's reframe this in terms of snowfall and hot cocoa:
- 
+In the hot cocoa example,
+we saw that the denominator is a scaling factor that rescales
+the chance for worlds where $x$ actually happened.
+Unfortunately,
+$p(x)$ is "intractable" in general,
+meaning that we can't efficiently measure or calculate it.
+Thankfully, we actually don't care about the precise value of $p(\theta \mid x)$;
+we are just trying to find the *parameters* that cause the maximum value.
+That means we can safely multiply this inferred distribution
+by any constant scaling factor.
+The maximum value itself will change,
+but it will occur for the same parameters.
+
+<aside>
+    <p>This is like trying to find the player who hit the most homeruns.
+    We can double everyone's homerun total without changing which player comes out on top.
+    </p>
+</aside>
+
+If we use a uniform prior $p(\theta) = \text{constant}$
+and recognize the $p(x)$ will have the same value for any specific $x$,
+we can remove these factors and see that the inferred posterior distribution
+is proportional to something we call the "likelihood function":
+
 $$
-p(❄️ \mid ☕) = \frac{p(☕ \mid ❄️)p(❄️)}{p(☕)}
+\begin{equation}
+p(\theta \mid x) \propto p(x \mid \theta)
+\end{equation}
 $$
 
-The left-hand-side is called the *posterior* which we try to *infer* based on some observation.
-In this case, I am trying to infer the likelihood it is snowing
-if I observe you drinking hot cocoa.
-We break this inference into three factors:
+The likelihood function tells us how likely some data point is given specific knob settings (parameter values).
+A simple likelihood function would be 1 if the data exactly matches the model's output with those parameters
+and 0 otherwise. For our baseball example, this might look like:
 
-- $p(☕ \mid ❄️)$: The chance that you drink hot cocoa when it really is snowing.
-- $p(❄️)$: The overall chance that it snows.
-- $p(☕)$: The overall chance you drink hot cocoa whether it is snowing or not.
+$$
+p((x, y) \mid m, b) =
+\begin{cases}
+1, &\text{if } y = mx + b \\
+0, &\text{otherwise}
+\end{cases}
+$$
 
-Let's assume these values are 0.8, 0.2, and 0.3 respectively, and see what the numerator represents.
-It snows 20% of the time, and in that 20% you drink cocoa 80% of the time.
-Multiplying these together gives the overall chance you drink cocoa *and* it's snowing as 80%&times;20% = 16%
-(80% of 20% is 16%).
+If we fix the $x$ runs and $y$ wins values to one of our data points,
+we can see how this likelihood changes for various values of the slope and intercept:
+For example, the 2023 Texas Rangers scored 881 runs and won 90 games.
+If we plug this in for $x$ and $y$ in our model, we get
 
-![All possible cocoa and snowing worlds](/assets/topic/model-fit/all-cocoa-worlds.jpg){:style="max-height:300px;display:block;margin:auto;"}
+$$
+p((881, 90) \mid m, b) =
+\begin{cases}
+1, &\text{if } 90 = m(881) + b \\
+0, &\text{otherwise}
+\end{cases}
+$$
 
-However, I don't really care about this value, because I am starting from the premise
-that I *know* you are drinking hot cocoa.
-That shrinks my scope to only the possible worlds that involve you drinking hot cocoa:
+There are certain values of $m$ and $b$ that make this equation true.
+Those are the parameters that make our model match this data point.
+We can actually plot these valid combinations as a line:
 
-![All worlds where you drink hot cocoa](/assets/topic/model-fit/given-cocoa.jpg){:style="max-height:300px;display:block;margin:auto;"}
+![Rangers line.](/assets/topic/model-fit/rangers-line.png)
 
-While the combined chance was just 16% before, I need to jack up this probability
-because I've shrunk the possible worlds down.
-Now the chance of snowing is much higher&mdash;it takes up more of the remaining possible worlds
-that already involve you drinking hot cocoa.
-I can get the exact number by dividing by the 30% chance we end up in a world where you drink hot cocoa
-to get 16% / 30% = 64% chance it's snowing. 
-Before, I took 16% out of the possible 100% of worlds. 
-Now I rescale to take that 16% out of the 30% of world's with hot cocoa.
-Using the knowledge that you are drinking cocoa, I can *infer* a higher chance that it is snowing.
+All of these possible solutions are equally valid because they all have the same likelihood score of 1
+and predict the correct wins from the runs.
+We can repeat this for all the data points:
 
-When fitting our model's parameters, we have an analogous situation.
-We want to infer the knob settings $\theta$ using the observed data point $x$.
-We first calculate the *joint* probability of $x$ and $\theta$ showing up at the same time (in the numerator)
-and then rescale to scope our possible worlds down to just those that actually involve $x$ (in the denominator).
-Then we want to find the settings $\theta$ that *maximize* the inferred probability $p(\theta \mid x)$.
-That will give us the most likely parameters for the observed $x$.
+![All team lines.](/assets/topic/model-fit/all-lines.png)
 
- . . . except when using our model, we have one huge problem. A massive, crushing, showstopping problem.
-We can find $p(x \mid \theta)$ by fixing our parameters to some $\theta$ and then creating a valid probability distribution
-that describes the data we'd expected to come from that model.
-We can pick a $p(\theta)$ which could be uniform across all possible knob settings.
-However, we don't know $p(x)$, the fraction of possible worlds where $x$ occurs.
-We just have the raw data points.
-
-# Maximizing the Likelihood
-
-The solution is actually simple.
-Recall that we ultimately infer/pick $\theta$ where $p(\theta \mid x)$ is at its maximum value&mdash;the most likely $\theta$ given $x$.
-We don't really care about the peak value itself
-just the value of $\theta$ where that peak occurs.
-As a result, we can add or remove constant scaling factors in equation (1)
-since scaling by a constant doesn't change *where* the peaks are,
-just how *high* they are! 
-
-Looking at equation (1), we see that $p(\theta)$ is constant if we choose it to be uniform
-and $p(x)$ is constant for any given $x$:
+The "perfect" solution would be one where all the lines intersect.
+We can create a combined or joint likelihood function for all the points by multiplying
+the individual likelihood functions together.
+Each function is either 0 or 1.
+The product of all of them will only be 1 if every factor is also 1,
+meaning every data point is exactly matched:
 
 $$
 \begin{aligned}
-p(\theta \mid x) &= \frac{p(x \mid \theta)\cancelto{\text{constant}}{p(\theta)}}{\cancelto{\text{constant}}{p(x)}}
-\\
-&\propto p(x \mid \theta)
+p(x^{(1)}, x^{(2)}, \dots, x^{(N)} \mid \theta) &= p(x^{(1)} \mid \theta)p(x^{(2)} \mid \theta)\cdots p(x^{(N)} \mid \theta) \\
+&= \prod_{i=1}^{N} p(x^{(i)} \mid \theta)
 \end{aligned}
 $$
 
-Thus, we can find the $\theta$ that maximizes $p(\theta \mid x)$ by finding the $\theta$ that maximizes $p(x \mid \theta)$ for that same $x$. We call $p(x \mid \theta)$ the *likelihood*, so picking $\theta$ this way is called *maximum likelihood estimation*:
+However, because the relationship isn't perfect&mdash;teams could have similar run totals
+but different win totals&mdash;this perfect point doesn't exist.
+
+We can fix this by relaxing our draconian likelihood function.
+Instead of demanding an exact match to every data point,
+we can make each line a smoother "bump" around the exact fit line:
 
 $$
-\begin{equation}
-\hat \theta = \underset{\theta}{\arg\max}\ \ p(x \mid \theta)
-\end{equation}
+p((x, y) \mid m, b) =
+\exp \left(-\frac{(y - (mx + b))^2}{2 \sigma^2}\right)
 $$
 
-In the baseball example, the likelihood function $p(x \mid \theta)$ might be:
+This function takes the exponential of the squared error between the prediction $mx + b$ and the observed wins $y$.
+The $\sigma$ is a constant we pick for how relaxed the likelihood should be (bigger means more forgiving).
+Here's what it looks like for the Rangers:
 
-$$
-p((x, y) \mid m, b)\ \propto \exp\left(-\frac{(y - (mx + b))^2}{2\sigma^2}\right)
-$$
+![Likelihood of parameter combinations](/assets/topic/model-fit/rangers.png)
 
-where $\sigma$ is the expected standard deviation around the model's prediction
-due to random variaiton between teams.
-For example we might expect that for a given number of runs scored,
-about 2/3 of teams (one standard deviation) fall within &plusmn;10 wins of each other/
+Notice that there is now a band of values that could work for our model.
+Just like before, we can multiply likelihoods of points together to get the combined likelihood.
+Here's how it might look if we combined the Rangers and Rockies:
 
-For an observation of (881 runs, 90 wins) from the 2023 Texas Rangers, this equation would look like:
+![Rangers and Rockies](/assets/topic/model-fit/rangers-rockies.png)
 
-$$
-p((881, 90) \mid m, b)\ \propto \exp\left(-\frac{(90 - (881m + b))^2}{2\cdot10^2}\right)
-$$
-
-If we plot this with the x axis as the slope parameter $m$ and the y axis as the intercept parameter $b$
-we can see the likelihood of each parameter combination (darker is better):
-
-![Likelihood of parameter combinations](/assets/topic/model-fit/881runs_90wins.png)
-
-Notice that there is a band of values that could work for our model.
-That means there are actually many different knob settings that would work well
-to match this singular data point.
-
-But we don't want to match just *one* data point but *all* the data points.
-To find the best overall knob configuration, we need to find the one that gives the
-highest *combined* score for *all* the data points simultaneously.
-We can get this combined likelihood by multiplying all the individual data point scores
-together and finding the parameters that maximize the product:
-
-$$
-\begin{equation}
-\hat \theta = \underset{\theta}{\arg\max}\ p(x^{(1)} \mid \theta)p(x^{(2)} \mid \theta)\cdots p(x^{(N)} \mid \theta) = \underset{\theta}{\arg\max}\ \prod_{i=1}^{N} p(x^{(i)} \mid \theta)
-\end{equation}
-$$
-
-Here's a plot that includes the 2023 Rangers fit first, the 2023 Rockies (721 runs, 59 wins) fit second, and the combined (multiplied) fit last:
-
-![Rangers and Rockies](/assets/topic/model-fit/rangers_rockies.png)
-
-Notice how putting both together constrains the range of good combinations.
+Notice how putting both together constrains the range of good combinations
+but still leaves a range of possible knob settings.
 You can imagine that as we multiply more and more likelihood functions together,
-one for each data point, we get a tighter and tighter bound around "good" combinations
-of slope and intercept. The parameters we pick at the peak of the final combined likelihood function
-are considered the "best" fit. Note that we don't know how *good* of a fit this is,
-just that it is the best we can do.
+we get a tighter and tighter bound around "good" combinations
+of slope and intercept.
+The parameters we pick at the peak of the final combined likelihood function
+are considered the "best" fit.
+Note that we don't know how *good* of a fit this is&mdash;the predictions might actually be pretty bad&mdash;
+just that it's the best we could find.
 
-# Maximizing the Log Likelihood
+# Maximizing the *Log* Likelihood
 
 While straight maximizing the combined likelihood is conceptually what we want to do,
-it's actually very hard computationally. If we multiple a bunch of factors together,
+it's actually very hard computationally. If we multiply a bunch of factors together,
 the result can very quickly get close to zero. Computers can only be so accurate,
 so eventually the "close to zero" value gets rounded down to zero. Not good.
+Plus, multiplication is annoying/slower/harder when compared with a simpler operation like addition.
 
-We can make this easier by wrapping everything in a logarithm and applying convenient properties.
-Like a constant scaling factor, the log function might change the height of the maximum peak,
-but it doesn't change the location. Thus, maximizing the likelihood gives us the same knob settings
-as maximizing the *log* likelihood:
+To make things easier, we can wrap everything in a logarithm and applying convenient properties.
+Like a constant scaling factor, putting everything inside a log function might change the height of the maximum peak,
+but it doesn't change the location.
+Thus, maximizing the *log* likelihood gives us the same slope and intercept values as maximizing the likelihood:
 
 $$
 \begin{equation}
 \begin{aligned}
-\hat \theta &= \underset{\theta}{\arg\max}\ \log\left(p(x^{(1)} \mid \theta)p(x^{(2)} \mid \theta)\cdots p(x^{(N)} \mid \theta) \right) \\
-&= \underset{\theta}{\arg\max}\ \log p(x^{(1)} \mid \theta) + \log p(x^{(2)} \mid \theta) + \cdots + \log p(x^{(N)} \mid \theta) \\
-&= \underset{\theta}{\arg\max}\ \sum_{i=1}^N \log p(x^{(i)} \mid \theta)
+\hat \theta &= \underset{\theta}{\arg\max}\prod_{i=1}^N p(x^{(i)} \mid \theta) \\
+&= \underset{\theta}{\arg\max}\log \left(\prod_{i=1}^N p(x^{(i)} \mid \theta)\right) \\
+&= \underset{\theta}{\arg\max} \sum_{i=1}^N \log p(x^{(i)} \mid \theta) \\
 \end{aligned}
 \end{equation}
 $$
 
-Of course, we can divide by the number of data points $N$ and make this look like an average,
+If take this approach to sum up the log likelihoods of all our baseball data points,
+we get a plot that looks something like this:
+
+![Log likelihood](/assets/topic/model-fit/loglikelihood.png)
+
+It turns out that this function has it's maximum point when $m = 0.122$ and $b = -10.5$.
+Now we can put these into our model and plot the model line vs. the actual data points:
+
+![Actual data](/assets/topic/model-fit/final-linear-model.png)
+
+Not perfect, but it does look like a fairly reasonable linear fit for our task!
+
+
+# Minimizing the Expected Negative Log Likelihood
+
+If we go back to equation (3),
+we can divide by the number of data points $N$ and make the log likelihood equation look like an average,
 or an expected value, recasting our problem as maximizing the expected log likelihood across the distribution of observed data points:
 
 $$
@@ -237,9 +246,6 @@ $$
 Note that when we convert to an expectation, we have to specify the distribution that
 the data points come from (are sampled from).
 We use $p_\mathcal{D}(x)$ to represent the "empirical distribution" of observed data points.
-
-
-# Minimizing the Negative Log Likelihood
 
 Many optimization algorithms are designed to find the *minimum* point of a function.
 We can flip our likelihood with a negative sign to work with them since

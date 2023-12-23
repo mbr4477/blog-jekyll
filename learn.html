@@ -7,6 +7,9 @@ title: Learn
 
 <h1>Learn</h1>
 
+<p>This is my personal "wikipedia" of learning articles.
+Check back as more are added or updated!</p>
+
 {%- for cat in categories -%}
     <h2>{{ cat }}</h2>
     {%- assign cat_pages = learn_pages | where_exp: "item", "item.tags contains cat" | sort: "title" -%}

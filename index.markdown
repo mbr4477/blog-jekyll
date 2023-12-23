@@ -14,4 +14,4 @@ layout: home
 I have two types of content here:
 
 - [Learning resources](/learn) that tackle specific topics and are iteratively improved
-- Blog posts that offer short thoughts or blurbs in a newletter style
+- Blog posts that deal with specific example problems or tutorials
