@@ -37,7 +37,7 @@ based on *observed data*.** That's it. No magic, just math (as we'll see).
 These algorithms follow a series of steps designed to estimate the parameter values
 required to make the model line up with the observed data.
 
-The dataset describes our problem *emprically*&mdash;implicitly through a set of unstructured observations.
+The dataset describes our problem *empirically*&mdash;implicitly through a set of unstructured observations.
 This becomes handy when we struggle to define our task *theoretically*&mdash;explicitly through an equation
 or other structured form.
 Here's a few examples to illustrate the difference:
