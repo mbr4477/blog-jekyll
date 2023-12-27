@@ -1,6 +1,5 @@
 ---
 layout: wiki
-exclude: true
 learn: true
 date: 2020-12-03
 title: Estimating Baseball Event Probabilities With log5

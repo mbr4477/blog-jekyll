@@ -1,6 +1,5 @@
 ---
 layout: wiki
-exclude: true
 learn: true
 title: The Kalman Filter
 date: 2023-11-28

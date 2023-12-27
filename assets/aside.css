@@ -3,10 +3,10 @@ aside {
     border-left: 6px solid #2196F3;
     padding: 15px 12px 4px 12px;
     margin-bottom: 15px;
+    color: darkslategray;
     display: flex;
     flex-direction: row;
     gap: 10px;
-    color: darkslategray;
 }
 
 aside::before {

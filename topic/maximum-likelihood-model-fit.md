@@ -1,6 +1,5 @@
 ---
 layout: wiki
-exclude: true
 learn: true
 title: Maximum Likelihood for Fitting Models
 tags:
