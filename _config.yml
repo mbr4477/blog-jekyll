@@ -44,6 +44,7 @@ markdown: kramdown
 
 header_pages:
   - learn.html
+  - resume.md
   - papers.md
   - about.markdown
 
