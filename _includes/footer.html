@@ -3,7 +3,9 @@
 
   <div class="wrapper">
 
-    <h2 class="footer-heading">{{ site.title | escape }}</h2>
+    <h2 class="footer-heading">{{ site.title | escape }}
+      <span style="margin-left:10px;font-weight:normal;font-size:smaller;color:gray;">{{- site.description | escape -}}</span>
+    </h2>
 
     <div class="footer-col-wrapper">
       <div class="footer-col footer-col-1">
@@ -21,16 +23,12 @@
         </ul>
       </div>
 
-      <div class="footer-col footer-col-2">
+      <div class="footer-col footer-col-3">
         {%- include social.html -%}
       </div>
-
-      <div class="footer-col footer-col-3">
-        <p>{{- site.description | escape -}}</p>
-      </div>
-      <div style="text-align:right;">
-        &copy; {{ site.author }} {{ site.startyear }}&ndash;{{ site.time | date: '%Y' }} | All Rights Reserved.
-      </div>
+    </div>
+    <div style="text-align:center;font-size:small;color:gray;">
+      &copy; {{ site.author }} {{ site.startyear }}&ndash;{{ site.time | date: '%Y' }} | All Rights Reserved.
     </div>
 
   </div>
