@@ -1,5 +1,14 @@
 <header class="site-header" role="banner">
-
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+    document.querySelectorAll("pre > code.language-mermaid").forEach(x => {
+      x.parentElement.classList.add("mermaid");
+      x.parentElement.style.background = "initial";
+      x.parentElement.style.border = "initial";
+      x.parentElement.innerHTML = x.innerHTML;
+    });
+    mermaid.initialize({ startOnLoad: true });
+  </script>
   <div class="wrapper">
     {%- assign default_paths = site.pages | sort: "order" | map: "path" -%}
     {%- assign page_paths = site.header_pages | default: default_paths -%}

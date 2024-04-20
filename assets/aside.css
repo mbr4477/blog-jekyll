@@ -1,14 +1,46 @@
+@font-face {
+    font-family: "Noto Color Emoji";
+    src: url(/assets/fonts/NotoColorEmoji.ttf) format("truetype");
+}
+
 aside {
     background-color: #e7f3fe;
-    border-left: 6px solid #2196F3;
+    border-left: 6px solid #2196f3;
+    border-radius: 6px;
     padding: 15px 12px 4px 12px;
     margin-bottom: 15px;
-    color: darkslategray;
+    color: #222;
     display: flex;
     flex-direction: row;
     gap: 10px;
 }
 
 aside::before {
-    content: '💡';
+    background-image: url(https://raw.githubusercontent.com/googlefonts/noto-emoji/main/png/32/emoji_u1f4a1.png);
+    content: "";
+    background-size: contain;
+    min-width: 24px;
+    height: 24px;
+    display: inline-block;
+}
+
+aside.objectives {
+    border: none;
+    border-radius: 4px;
+    background-color: #f3f3f3;
+    font-size: 0.8em;
+    padding: 16px 20px 16px 20px;
+}
+
+aside.objectives ul {
+    margin: 0px;
+}
+
+aside.objectives ul li {
+    list-style: none;
+    margin: 0px;
+}
+
+aside.objectives::before {
+    display: none;
 }
